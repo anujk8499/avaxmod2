@@ -1,4 +1,22 @@
-# Starter Next/Hardhat Project
+# AnujKumarWallet Smart Contract
+
+## Overview
+
+This Solidity smart contract represents a simple wallet named `AnujKumarWallet`. The wallet allows the owner to deposit and withdraw tokens, check the balance, and purchase NFTs. It includes a basic access control mechanism using a passkey.
+
+## Contract Details
+
+- **Contract Name:** AnujKumarWallet
+- **Version:** 0.8.9
+
+## Features
+
+- Deposit tokens into the wallet.
+- Withdraw tokens from the wallet.
+- Check the current balance of the wallet.
+- Purchase NFTs using the wallet balance.
+
+  ## Installation
 
 After cloning the github, you will want to do the following to get the code running on your computer.
 
