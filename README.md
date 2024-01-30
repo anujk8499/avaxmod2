@@ -1,20 +1,43 @@
-# AnujKumarWallet Smart Contract
+# Voting System Smart Contract
 
-## Overview
-
-This Solidity smart contract represents a simple wallet named `AnujKumarWallet`. The wallet allows the owner to deposit and withdraw tokens, check the balance, and purchase NFTs. It includes a basic access control mechanism using a passkey.
-
-## Contract Details
-
-- **Contract Name:** AnujKumarWallet
-- **Version:** 0.8.9
+This is a simple Ethereum smart contract written in Solidity for a basic voting system. The contract allows an administrator to manage registered voters and conduct voting for different candidates.
 
 ## Features
 
-- Deposit tokens into the wallet.
-- Withdraw tokens from the wallet.
-- Check the current balance of the wallet.
-- Purchase NFTs using the wallet balance.
+- **Administrator:** The contract has an administrator, who has special privileges to manage the system.
+- **Voter Registration:** Only the administrator can register voters, allowing them to participate in the voting process.
+- **Voter Revocation:** The administrator can also revoke the voting rights of a registered voter.
+- **Voting:** Registered voters can cast their votes for a specific candidate.
+- **Vote Count:** The contract keeps track of the total number of votes cast and the count for each candidate.
+- **Events:** The contract emits events for successful votes and revoked voters.
+
+## Smart Contract Details
+
+### State Variables
+
+- `admin`: The Ethereum address of the administrator who has control over the contract.
+- `voters`: A mapping to keep track of registered voters. A boolean value indicates whether a voter is registered or not.
+- `votesCount`: A mapping to store the count of votes for each candidate.
+- `totalVotes`: The total number of votes cast.
+
+### Events
+
+- `Voted(address indexed voter, string candidate)`: Emitted when a registered voter casts a vote for a candidate.
+- `VoterRevoked(address indexed revokedVoter)`: Emitted when the administrator revokes the voting rights of a registered voter.
+
+### Modifiers
+
+- `onlyAdmin`: A modifier that restricts the execution of a function to the administrator only.
+- `onlyVoter`: A modifier that restricts the execution of a function to registered voters only.
+
+### Functions
+
+- `constructor()`: Initializes the contract with the address of the deploying account as the administrator.
+- `registerVoter(address _voter) external onlyAdmin`: Allows the administrator to register a new voter.
+- `revokeVoter(address _voter) external onlyAdmin`: Allows the administrator to revoke the voting rights of a registered voter
+- `vote(string memory _candidate) external onlyVoter`: Allows registered voters to cast their votes for a specific candidate.
+
+
 
   ## Installation
 
