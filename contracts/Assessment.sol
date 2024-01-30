@@ -1,70 +1,46 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
+contract VotingSystem {
+    address public admin;
+    mapping(address => bool) public voters;
+    mapping(string => uint256) public votesCount;
+    uint256 public totalVotes;
 
-contract AnujKumarWallet {
-    address payable public OwnerAddress;
-    uint256 public Balance;
-    uint256 public password;
+    event Voted(address indexed voter, string candidate);
+    event VoterRevoked(address indexed revokedVoter);
 
-    event DepositEvent(uint256 amount);
-    event WithdrawEvent(uint256 amount);
-    event PurchaseNFTEvent(uint256 _number);
-
-    constructor(uint initailBalance) payable {
-        OwnerAddress = payable(msg.sender);
-        Balance = initailBalance;
-        password = 1024;
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Only admin can call this function");
+        _;
     }
 
-    function getBalance() public view returns (uint256) {
-        return Balance;
+    modifier onlyVoter() {
+        require(voters[msg.sender], "You are not a registered voter");
+        _;
     }
 
-    function DepositToken(uint256 amt, uint256 passkey) public payable {
-        uint256 prevBal = Balance;
-        require(msg.sender == OwnerAddress, "You don't own this account.");
-        require(passkey == password, "passkey doesn't match");
-
-        Balance += amt;
-
-        assert(Balance == prevBal + amt);
-        emit DepositEvent(amt);
+    constructor() {
+        admin = msg.sender;
     }
 
-    // custom error
-    error InsufficientBalance(uint256 Balance, uint256 Amount);
-
-    function WithdrawToken(uint256 amt, uint256 passkey) public {
-        require(msg.sender == OwnerAddress, "You are not authorized");
-        require(passkey == password, "passkey doesn't match");
-
-        uint256 prevBal = Balance;
-        if (Balance < amt) {
-            revert InsufficientBalance({Balance: Balance, Amount: amt});
-        }
-
-        // WithdrawToken the given amount
-        Balance -= amt;
-
-        // assert the Balance is correct
-        assert(Balance == (prevBal - amt));
-
-        // emit the event
-        emit WithdrawEvent(amt);
+    function registerVoter(address _voter) external onlyAdmin {
+        voters[_voter] = true;
     }
 
-    function getContractAddress() public view returns (address) {
-        return address(this);
+    function revokeVoter(address _voter) external onlyAdmin {
+        require(voters[_voter], "Voter is not registered");
+        voters[_voter] = false;
+        emit VoterRevoked(_voter);
     }
 
-    function getContractBalance() public view returns (uint256) {
-        return Balance;
+    function vote(string memory _candidate) external onlyVoter {
+        require(bytes(_candidate).length > 0, "Candidate name cannot be empty");
+
+        votesCount[_candidate]++;
+        totalVotes++;
+        emit Voted(msg.sender, _candidate);
     }
 
-    function purchaseNFT(uint256 amt, uint256 passkey) public {
-        WithdrawToken(amt, passkey);
 
-        emit PurchaseNFTEvent(amt);
-    }
 }
